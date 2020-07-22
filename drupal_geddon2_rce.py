@@ -23,7 +23,6 @@ def check(host, port, timeout):
         res = requests.get(url, timeout=timeout)
         if 'string(4) \"test\"' in res.text:
             info = '存在远程代码执行: %s' % payload_url
-            print info
             return info
     except Exception, e:
         pass
